@@ -42,16 +42,3 @@ app.include_router(order_router.router)
 async def docs():    
     return RedirectResponse(url="/docs")
 
-@app.get("/host")
-async def host():    
-    container_hostname = socket.gethostname()    
-    container_ip = socket.gethostbyname(container_hostname)
-    host_ip = os.environ.get('HOST_IP')
-    host_name = os.environ.get('HOST_NAME')
-    
-    return {
-            "container_ip": container_ip,
-            "container_hostname": container_hostname,
-            "host_ip": host_ip,
-            "host_name": host_name,
-           }

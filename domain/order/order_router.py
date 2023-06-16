@@ -4,7 +4,6 @@ from models import *
 from database import engineconn
 from datetime import datetime
 import random
-from config import host
 
 router = APIRouter(
     prefix="/api/order",
@@ -26,18 +25,13 @@ async def get_order(id: int):
         raise HTTPException(status_code=404, detail="order not found")
 
     order_dict = order.__dict__
-    order_dict.pop("_sa_instance_state")  # SQLAlchemy 내부 상태 정보 제거
-    order_dict.update(host())
+    order_dict.pop("_sa_instance_state")  
 
     return order_dict
 
 
-
-
-
 @router.post("/payment/")
 async def order(customer_id: int, product_id: int):
-    # 고객과 제품이 존재하는지 확인
     customer = session.query(Customer).filter(Customer.id == customer_id).first()
     product = session.query(Product).filter(Product.id == product_id).first()
 
@@ -61,9 +55,7 @@ async def order(customer_id: int, product_id: int):
     
     session.add(order)
     session.commit()
-    # session.refresh(order)
 
     msg = {"message": "Order placed successfully"}
-    msg.update(host())
     
     return msg
