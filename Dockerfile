@@ -1,24 +1,27 @@
 # FROM python:3.10
-FROM centos:8
+# FROM centos:8
+FROM color275/python-3-10
 
-RUN cd /etc/yum.repos.d/
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
-RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+# RUN cd /etc/yum.repos.d/
+# RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+# RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
-# 필요한 패키지 설치
-RUN yum update -y && yum install -y gcc openssl-devel bzip2-devel libffi-devel wget make mysql-devel bind-utils ncurses jq
+# # 필요한 패키지 설치
+# RUN yum update -y && yum install -y gcc openssl-devel bzip2-devel libffi-devel wget make mysql-devel bind-utils ncurses jq
 
-# Python 3.10 다운로드 및 설치
-RUN wget https://www.python.org/ftp/python/3.10.2/Python-3.10.2.tgz
-RUN tar xzf Python-3.10.2.tgz
-RUN cd Python-3.10.2 && ./configure --enable-optimizations && make altinstall
+# # Python 3.10 다운로드 및 설치
+# RUN wget https://www.python.org/ftp/python/3.10.2/Python-3.10.2.tgz
+# RUN tar xzf Python-3.10.2.tgz
+# RUN cd Python-3.10.2 && ./configure --enable-optimizations && make altinstall
 
-# pip 설치
-RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-RUN python3.10 get-pip.py
+# # pip 설치
+# RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+# RUN python3.10 get-pip.py
 
 # RUN yum install -y mysql-devel
 # RUN pip3.10 install mysqlclient
+
+RUN ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
 WORKDIR /app
 
@@ -34,8 +37,9 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # cmd
 
-# docker build -t color275/ecommerce-linux --platform .
+
 # docker build -t color275/ecommerce-linux --platform linux/amd64 .
+# docker build --no-cache -t color275/ecommerce-linux --platform linux/amd64 .
 # docker push color275/ecommerce-linux
 # docker pull color275/ecommerce-linux
 
@@ -52,7 +56,8 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 # cat <<EOF> .env
 # DBUSER=appuser
 # PASSWORD=Appuser12#$
-# HOST=host.docker.internal
+# PRIMARY_HOST=host.docker.internal
+# READONLY_HOST=host.docker.internal
 # PORT=3306
 # DBNAME=ecommerce
 # EOF
@@ -62,7 +67,8 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 # LOCAL DOCKER
 # export DBUSER="appuser"
 # export PASSWORD="Appuser12#$"
-# export HOST="host.docker.internal"
+# export PRIMARY_HOST="host.docker.internal"
+# export READONLY_HOST="host.docker.internal"
 # export PORT="3306"
 # export DBNAME="ecommerce"
 # export HOST_NAME=$(hostname)
@@ -71,7 +77,8 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 # LOCAL 
 # export DBUSER="appuser"
 # export PASSWORD="Appuser12#$"
-# export HOST="localhost"
+# export PRIMARY_HOST="localhost"
+# export READONLY_HOST="localhost"
 # export PORT="3306"
 # export DBNAME="ecommerce"
 # export HOST_NAME=$(hostname)
@@ -79,6 +86,8 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 # export ORDER_SERVICE="localhost"
 # export CUSTOMER_SERVICE="localhost"
 # export PRODUCT_SERVICE="localhost"
+
+# uvicorn main:app --port 8000 --reload
 
 # # 삭제
 # docker stop $(docker ps -a -q)
