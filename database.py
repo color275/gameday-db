@@ -34,8 +34,8 @@ DBUSER = get_secret("AWS-Aurora-DBUserName")
 PASSWORD = get_secret("AWS-Aurora-DBPassword")
 PRIMARY_HOST = get_secret("AWS-Aurora-ClusterEndpoint")
 READONLY_HOST = get_secret("AWS-Aurora-ReaderEndpoint")
-PORT = os.getenv("PORT")
-DBNAME = os.getenv("DBNAME")
+PORT = "3306"
+DBNAME = "ecommerce"
 
 PRIMARY_DB_URL = f'mysql+pymysql://{DBUSER}:{PASSWORD}@{PRIMARY_HOST}:{PORT}/{DBNAME}'
 READONLY_DB_URL = f'mysql+pymysql://{DBUSER}:{PASSWORD}@{READONLY_HOST}:{PORT}/{DBNAME}'
