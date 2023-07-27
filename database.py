@@ -11,7 +11,8 @@ from botocore.exceptions import ClientError
 
 def get_secret(secret_name):
 
-    region_name = "ap-northeast-2"
+    # region_name = "ap-northeast-2"
+    region_name = os.environ["region"]
 
     session = boto3.session.Session()
     client = session.client(
