@@ -147,3 +147,23 @@ async def get_top_vip_customers(session: Session = Depends(readonly.get_session)
         raise HTTPException(status_code=404, detail="Data not found")
 
     return return_val
+
+@router.get("/modify_datatype")
+async def modify_datatype(session: Session = Depends(primary.get_session)):
+    try :
+        session.execute(text("ALTER TABLE customer ADD gender_new INT NULL DEFAULT NULL;"))
+        session.execute(text("UPDATE customer SET gender_new = CASE WHEN gender = '남' THEN 1 ELSE 2 END;"))
+        session.execute(text("ALTER TABLE customer CHANGE gender gender_old VARCHAR(10);"))
+        session.execute(text("ALTER TABLE customer CHANGE gender_new gender INT;"))
+        return {"message": "SQL statements executed successfully."}
+    except Exception as e:
+        return {"error": str(e)}
+
+@router.get("/origin_datatype")
+async def modify_datatype(session: Session = Depends(primary.get_session)):
+    try :
+        session.execute(text("ALTER TABLE customer DROP gender;"))
+        session.execute(text("ALTER TABLE customer CHANGE gender_old gender VARCHAR(10);"))
+        return {"message": "SQL statements executed successfully."}
+    except Exception as e:
+        return {"error": str(e)}
